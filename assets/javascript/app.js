@@ -21,7 +21,11 @@ function displayShows() {
     
         // Creates a variable for each image
         var showImage = $("<img>");
+
         // Create variables for static and animated gifs
+        var still = results[i].images.fixed_height_still.url;
+        var animate = results[i].images.fixed_height.url;
+
     
         });        
     }
@@ -46,11 +50,24 @@ function displayShows() {
 
         };
 
-    
+        $("#add-show.btn.btn-primary").on("click", function(event) {
+            event.preventDefault();
 
-    
+            // Grab the input from the textbox
+            var show = $("show-input").val().trim();
 
-    }
+            // Adding the TV show from the textbox to our array
+            topics.push(show);
 
-});
+            // Call the renderButtons function
+            renderButtons();
+        });
+
+            // Adding a click event to all elements with a class of "show-btn" 
+            $(document).on("click", ".show-btn.btn.btn-info", displayShows);
+
+            // Call the renderButtons function to display the initial buttons
+            renderButtons();
+
+
 
