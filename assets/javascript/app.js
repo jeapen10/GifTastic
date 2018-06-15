@@ -5,30 +5,66 @@ function displayShows() {
 
     var show = $(this).attr("data-name");
     var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + show + "&api_key=viY2ZvKbfUqJapQzLLEj13V9sSxgXKYJ&limit=10";
-    
+
     $.ajax({
         url: queryURL,
         method: "GET"
 
-    }).done(function(response) {
+    }).then(function (response) {
         // Performs this function when the request is recieved back from the API
-            var results = response.data;
-            console.log(response);
-    
-        // Create variables for the rating of gifs
-        var rating = results[i].rating;
-        var p = $("<p>").text("Rating: " + rating);
-    
-        // Creates a variable for each image
-        var showImage = $("<img>");
+        var results = response.data;
+        console.log(response);
 
-        // Create variables for static and animated gifs
-        var still = results[i].images.fixed_height_still.url;
-        var animate = results[i].images.fixed_height.url;
+        for (var i = 0; i < 10; i++) {
+            var topicDiv = $("<div class='topic'>");
 
-    
-        });        
-    }
+            // Create variables for the rating of gifs
+            var rating = results[i].rating;
+            var p = $("<p>").text("Rating: " + rating);
+
+            // Displaying the rating 
+            topicDiv.append(p);
+
+            // Variable for still images
+            var imgURL = results[i].images.original_still.url;
+
+            var image = $("<img>").attr("src", imgURL);
+
+            image.addClass("gif");
+
+            image.attr("data-still", imgURL);
+
+            // Create variable to animate images 
+            var animate = results[i].images.original.url;
+
+            image.attr("data-animate", animate);
+
+            image.attr("data-state", "still");
+
+            // Append the image to the corresponding topic
+            topicDiv.prepend(image);
+
+            $(".gif").on("click", function () {
+                // The attr jQuery method allows us to get or set the value of any attribute on our HTML element
+                var state = $(this).attr("data-state");
+
+                // If the clicked image's state is still, update its src attribute to what its data-animate value is.
+                // Then, set the image's data-state to animate
+                // Else set src to the data-still value
+                if (state === "still") {
+                    $(this).attr("src", $(this).attr("data-animate"));
+                    $(this).attr("data-state", "animate");
+                } else {
+                    $(this).attr("src", $(this).attr("data-still"));
+                    $(this).attr("data-state", "still");
+                }
+            });
+
+        }
+    })
+
+
+
 
     function renderButtons() {
 
@@ -37,9 +73,9 @@ function displayShows() {
 
         // Create a for loop to grab the gifs and information for each button clicked
         for (var i = 0; i < topics.length; i++) {
-        
+
             var showsDiv = $("<button>");
-            
+
             showsDiv.addClass("show-btn");
 
             showsDiv.attr("data-name", topics[i]);
@@ -48,26 +84,27 @@ function displayShows() {
 
             $("#shows").append(showsDiv);
 
-        };
+        }
+    }
 
-        $("#add-show.btn.btn-primary").on("click", function(event) {
-            event.preventDefault();
+    $("#add-show.btn.btn-primary").on("click", function(event) {
+        event.preventDefault();
 
-            // Grab the input from the textbox
-            var show = $("show-input").val().trim();
+        // Grab the input from the textbox
+        var show = $("show-input").val().trim();
 
-            // Adding the TV show from the textbox to our array
-            topics.push(show);
+        // Adding the TV show from the textbox to our array
+        topics.push(show);
 
-            // Call the renderButtons function
-            renderButtons();
-        });
+        // Call the renderButtons function
+        renderButtons();
+    });
 
-            // Adding a click event to all elements with a class of "show-btn" 
-            $(document).on("click", ".show-btn.btn.btn-info", displayShows);
+    // Adding a click event to all elements with a class of "show-btn" 
+    $(document).on("click", ".show-btn.btn.btn-info", displayShows);
 
-            // Call the renderButtons function to display the initial buttons
-            renderButtons();
+    // Call the renderButtons function to display the initial buttons
+    renderButtons();
 
 
 
