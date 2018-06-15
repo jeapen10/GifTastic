@@ -23,10 +23,8 @@ function displayShows() {
         var showImage = $("<img>");
         // Create variables for static and animated gifs
     
-        }        
+        });        
     }
-
-
 
     function renderButtons() {
 
